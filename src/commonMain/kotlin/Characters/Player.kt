@@ -25,6 +25,7 @@ class Player() : Container(){
         val image = resourcesVfs["mario_sprite.png"].readBitmap()
         val sprite = sprite(image)
         sprite.xy(40.0, initialY)
+        return sprite
     }
 
 

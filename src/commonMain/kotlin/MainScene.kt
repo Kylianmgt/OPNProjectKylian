@@ -1,3 +1,4 @@
+import Characters.Player
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 
