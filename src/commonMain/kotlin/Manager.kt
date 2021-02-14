@@ -18,6 +18,7 @@ class Manager (private val container : Container){
         isRunning = true
         status = GameStatus.RUNNING
 
+
     }
     fun finish(){
         isRunning = false

@@ -5,7 +5,10 @@ import com.soywiz.korge.view.Container
 class MainScene() : Scene() {
     override suspend fun Container.sceneInit() {
         val gameManager = Manager(this)
-        val player = Player()
+        val level = Level(gameManager)
+        addChild(level)
+        level.init()
+        val player = Player(gameManager)
         addChild(player)
         player.init()
     }
