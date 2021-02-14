@@ -13,6 +13,8 @@ import com.soywiz.korio.file.std.*
 import com.soywiz.korma.geom.degrees
 import com.soywiz.korma.interpolation.Easing
 
+
+class Coordinates(val x: Double, val y: Double)
 class Player(val gameManager : Manager) : Container(){
 
 
@@ -28,6 +30,7 @@ class Player(val gameManager : Manager) : Container(){
     private val yLimit = 150.0
     private val initialY = 500.0
     private var status = PlayerStatus.RUNNING
+    private var speedFactor = 10.0
 
     suspend fun init() {
         player = this.buildPlayer()
@@ -49,6 +52,12 @@ class Player(val gameManager : Manager) : Container(){
                 }
             }
         }
+        player.addUpdater {
+            if(gameManager.isRunning) {
+                val coordinates = this@Player.playerManager(this.x, this.y)
+                player.position(coordinates.x, coordinates.y)
+            }
+        }
     }
      suspend fun buildPlayer() : Sprite{
         val image = resourcesVfs["mario_sprite.png"].readBitmap()
@@ -60,8 +69,28 @@ class Player(val gameManager : Manager) : Container(){
     }
 
 
-    private fun playerManager(startingX : Double, startingY : Double) : Int {
-        return 0
+    private fun playerManager(startingX : Double, startingY : Double) : Coordinates {
+        val x: Double = startingX
+        var y: Double = startingY
+
+        when (status) {
+            PlayerStatus.JUMP_UP -> {
+                y -= 1 * speedFactor
+                if(y <= yLimit) {
+                    status = PlayerStatus.JUMP_DOWN
+                }
+            }
+
+            PlayerStatus.JUMP_DOWN -> {
+                y += 1 * speedFactor
+                if(y >= initialY) {
+                    status = PlayerStatus.RUNNING
+                }
+            }
+
+        }
+
+        return Coordinates(x,y)
     }
 
 
