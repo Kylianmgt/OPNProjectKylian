@@ -27,10 +27,10 @@ class Player(val gameManager : Manager) : Container(){
     }
 
     private lateinit var player : Sprite
-    private val yLimit = 150.0
+    private val yLimit = 200.0
     private val initialY = 500.0
     private var status = PlayerStatus.RUNNING
-    private var speedFactor = 10.0
+    private var speedFactor = 20.0
 
     suspend fun init() {
         player = this.buildPlayer()
@@ -58,6 +58,11 @@ class Player(val gameManager : Manager) : Container(){
                 player.position(coordinates.x, coordinates.y)
             }
         }
+        player.onCollision({it.name === "ennemy"}) {
+            gameManager.finish()
+
+        }
+
     }
      suspend fun buildPlayer() : Sprite{
         val image = resourcesVfs["mario_sprite.png"].readBitmap()

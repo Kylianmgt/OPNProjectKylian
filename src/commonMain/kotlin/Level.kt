@@ -11,13 +11,13 @@ import kotlin.random.Random.Default.nextDouble
 
 class Level (private val game: Manager): Container() {
 
-    val originX = 1300.0
+    val originX = 1400.0
     private var floor: MutableList<Image> = mutableListOf()
     private var ennemies : MutableList<Image> = mutableListOf()
     private val floorY = 600.0
-    private var speedFactor: Double = 10.0
+    private var speedFactor: Double = 15.00
     private val speedIncrement = 0.005
-    private val xSpacer = 300.0
+    private val xSpacer = 10000.0
 
     suspend fun init() {
         createWorld()
@@ -29,11 +29,11 @@ class Level (private val game: Manager): Container() {
         var floorX = 0.0;
         val y = 500.0
         var ennemyX = originX
-        for (i in 0..9) {
+        for (i in 0..7) {
             floor.add(Floor(floorX, floorY).init())
             ennemies.add(Ennemy(ennemyX,y).create())
             ennemyX += 1000
-            floorX += 225
+            floorX += 200
 
 
         }
@@ -60,7 +60,7 @@ class Level (private val game: Manager): Container() {
                     val x = floor.x - (1 * speedFactor)
                     floor.position(x, floor.y)
 
-                    if ((x + 100 < 0)) {
+                    if ((x + 200 < 0)) {
                         floorIterator.remove()
                         removeChild(floor)
                         addFloorTile()
@@ -84,7 +84,7 @@ class Level (private val game: Manager): Container() {
     private fun addEnnemy() {
         if(game.isRunning) {
             GlobalScope.launch {
-                val newEnnemy = Ennemy(originX + randomInRange(0.0, xSpacer), 320.0).create()
+                val newEnnemy = Ennemy(originX + xSpacer, 500.0).create()
                 addChild(newEnnemy)
                 ennemies.add(newEnnemy)
             }
@@ -93,7 +93,7 @@ class Level (private val game: Manager): Container() {
     private fun addFloorTile() {
         if(game.isRunning) {
             GlobalScope.launch {
-                val newFloor = Floor(1400.0, floorY).init()
+                val newFloor = Floor(1300.0, floorY).init()
                 addChild(newFloor)
                 floor.add(newFloor)
             }
