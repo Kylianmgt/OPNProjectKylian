@@ -7,16 +7,14 @@ import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korge.view.position
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.random.Random.Default.nextDouble
 
 class Level (private val game: Manager): Container() {
 
     val originX = 1400.0
     private var floor: MutableList<Image> = mutableListOf()
-    private var ennemies : MutableList<Image> = mutableListOf()
+    private var ennemies: MutableList<Image> = mutableListOf()
     private val floorY = 600.0
     private var speedFactor: Double = 15.00
-    private val speedIncrement = 0.005
     private val xSpacer = 10000.0
 
     suspend fun init() {
@@ -31,7 +29,7 @@ class Level (private val game: Manager): Container() {
         var ennemyX = originX
         for (i in 0..7) {
             floor.add(Floor(floorX, floorY).init())
-            ennemies.add(Ennemy(ennemyX,y).create())
+            ennemies.add(Ennemy(ennemyX, y).create())
             ennemyX += 1000
             floorX += 200
 
@@ -49,8 +47,8 @@ class Level (private val game: Manager): Container() {
     fun updater() {
         addFixedUpdater(60.timesPerSecond) {
             if (game.status == Manager.GameStatus.RESTART) {
-                //destroyWorld()
-                //speedFactor = 10.0
+                setLevelToZero()
+                speedFactor = 15.0
             }
             if (game.isRunning) {
                 //speedFactor += speedIncrement
@@ -67,11 +65,11 @@ class Level (private val game: Manager): Container() {
                     }
                 }
                 val ennemyIterator = this.ennemies.iterator()
-                while(ennemyIterator.hasNext()) {
+                while (ennemyIterator.hasNext()) {
                     val ennemy = ennemyIterator.next()
                     val x = ennemy.x - (1 * speedFactor)
                     ennemy.position(x, ennemy.y)
-                    if(x < 0) {
+                    if (x < 0) {
                         ennemyIterator.remove()
                         removeChild(ennemy)
                         addEnnemy()
@@ -81,8 +79,9 @@ class Level (private val game: Manager): Container() {
 
         }
     }
+
     private fun addEnnemy() {
-        if(game.isRunning) {
+        if (game.isRunning) {
             GlobalScope.launch {
                 val newEnnemy = Ennemy(originX + xSpacer, 500.0).create()
                 addChild(newEnnemy)
@@ -90,8 +89,9 @@ class Level (private val game: Manager): Container() {
             }
         }
     }
+
     private fun addFloorTile() {
-        if(game.isRunning) {
+        if (game.isRunning) {
             GlobalScope.launch {
                 val newFloor = Floor(1300.0, floorY).init()
                 addChild(newFloor)
@@ -99,7 +99,14 @@ class Level (private val game: Manager): Container() {
             }
         }
     }
-    fun randomInRange(min: Double, max:Double): Double {
-        return nextDouble() * (max - min) + min
+
+    private fun setLevelToZero() {
+        ennemies.forEach { this@Level.removeChild(it) }
+        floor.forEach { this@Level.removeChild(it) }
+        ennemies = mutableListOf()
+        floor = mutableListOf()
+        GlobalScope.launch {
+            createWorld()
+        }
     }
 }
