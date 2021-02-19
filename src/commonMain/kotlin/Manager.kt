@@ -32,19 +32,21 @@ class Manager (private val container : Container){
             gameOverPrint()
         }
 
+
     }
     suspend fun restart(){
+        print("igohere")
         removeMessage()
         status = GameStatus.RESTART
         delay(TimeSpan(500.0))
         start()
     }
 
-    private fun gameOverPrint() {
-        val gameOverContainer = container.text("GAME OVER")
+     fun gameOverPrint() {
+        val gameOverContainer = container.text("You loose")
         gameOverContainer.centerOnStage()
         gameOverContainer.y += 50
-        val text = container.text("Press Space to restart")
+        val text = container.text("Press Space to restart (not working actually please restart program")
         text.centerOnStage()
         text.y += 100
         container.addChild(text)
@@ -53,7 +55,7 @@ class Manager (private val container : Container){
         gameOverMessage = gameOverContainer
     }
 
-    private fun removeMessage() {
+     fun removeMessage() {
         container.removeChild(gameOverMessage)
         container.removeChild(message)
         message = null

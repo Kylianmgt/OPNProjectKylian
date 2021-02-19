@@ -41,6 +41,7 @@ class Player(val gameManager : Manager) : Container(){
                     gameManager.start()
                 }
                 if (gameManager.status == Manager.GameStatus.FINISHED) {
+
                     gameManager.restart()
                 } else {
                     val playerY = player.y
